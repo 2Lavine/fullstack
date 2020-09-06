@@ -22,7 +22,7 @@ const App = () => {
   };
   const handleRightClick = () => {
     const newClicks = {
-      ...clicks,
+      left: clicks.left,
       right: clicks.right + 1,
     };
     setClicks(newClicks);
@@ -34,8 +34,6 @@ const App = () => {
   return (
     <div>
       <Display counter={counter}></Display>
-      {clicks.left}
-      {clicks.right}
       <div>
         <ButtonNew handleClick={increse} text="plus"></ButtonNew>
         <ButtonNew handleClick={toZero} text="toZero"></ButtonNew>

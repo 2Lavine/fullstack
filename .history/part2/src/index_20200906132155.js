@@ -1,5 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import App from "./App.js";
-import './index.css'
+import axios from "axios";
 ReactDOM.render(<App></App>, document.getElementById("root"));

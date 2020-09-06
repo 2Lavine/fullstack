@@ -22,7 +22,7 @@ const App = () => {
   };
   const handleRightClick = () => {
     const newClicks = {
-      ...clicks,
+      left: clicks.left,
       right: clicks.right + 1,
     };
     setClicks(newClicks);

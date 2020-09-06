@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Note from "./components/Note";
-import noteService from "./services/note";
-import Notification from "./components/Notification";
-import Footer from "./components/Footer";
+import Axios from "axios";
+
 const App = () => {
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState("input a new note");
   const [showAll, setShowAll] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("some error happened...");
-
   const hook = () => {
-    noteService.getAll().then((notes) => {
-      setNotes(notes);
+    Axios.get("http://localhost:3001/notes").then((res) => {
+      console.log(res,"fulfilled");
+      setNotes(res.data);
     });
   };
   useEffect(hook, []);
@@ -21,11 +19,11 @@ const App = () => {
       content: newNote,
       date: new Date().toISOString(),
       important: Math.random() < 0.5,
+      id: notes.length + 1,
     };
-    noteService.create(newNoteObject).then((res) => {
-      setNotes(notes.concat(res.data));
-      setNewNote("");
-    });
+    console.log(notes);
+    setNotes(notes.concat(newNoteObject));
+    setNewNote("");
   };
   const handleNoteChange = (e) => {
     console.log(e.target.value);
@@ -35,24 +33,6 @@ const App = () => {
     setShowAll(!showAll);
     console.log(notesToShow);
   };
-  const toggleImportanceOf = (id) => {
-    console.log("importance of " + id + " needs to be toggled");
-    const note = notes.find((item) => item.id === id);
-    const changedNote = { ...note, important: !note.important };
-    noteService
-      .update(id, changedNote)
-      .then((res) => {
-        setNotes(notes.map((note) => (note.id !== id ? note : res.data)));
-      })
-      .catch((err) => {
-        setErrorMessage(
-          `Note '${note.content}' was already removed from server`
-        );
-        setTimeout(() => {
-          setErrorMessage(null);
-        }, 5000);
-      });
-  };
   const notesToShow = showAll
     ? notes
     : notes.filter((item) => item.important === true);
@@ -60,7 +40,6 @@ const App = () => {
   return (
     <div>
       <h1>Notes</h1>
-      <Notification message={errorMessage} />
       <div>
         <button onClick={handleNoteShow}>
           show{showAll ? "showALL" : "important"}
@@ -72,14 +51,9 @@ const App = () => {
       </form>
       <ul>
         {notesToShow.map((note) => (
-          <Note
-            note={note}
-            key={note.id}
-            toggleImportance={() => toggleImportanceOf(note.id)}
-          ></Note>
+          <Note note={note} key={note.id}></Note>
         ))}
       </ul>
-      <Footer></Footer>
     </div>
   );
 };

@@ -9,24 +9,6 @@ const ButtonNew = ({ handleClick, text }) => {
 };
 const App = () => {
   const [counter, setCounter] = useState(0);
-  const [clicks, setClicks] = useState({
-    left: 0,
-    right: 0,
-  });
-  const handleLeftClick = () => {
-    const newClicks = {
-      left: clicks.left + 1,
-      right: clicks.right,
-    };
-    setClicks(newClicks);
-  };
-  const handleRightClick = () => {
-    const newClicks = {
-      ...clicks,
-      right: clicks.right + 1,
-    };
-    setClicks(newClicks);
-  };
   const increse = () => {
     setCounter(counter + 1);
   };
@@ -34,19 +16,9 @@ const App = () => {
   return (
     <div>
       <Display counter={counter}></Display>
-      {clicks.left}
-      {clicks.right}
       <div>
         <ButtonNew handleClick={increse} text="plus"></ButtonNew>
         <ButtonNew handleClick={toZero} text="toZero"></ButtonNew>
-        <ButtonNew
-          handleClick={handleLeftClick}
-          text="handleLeftClick"
-        ></ButtonNew>
-        <ButtonNew
-          handleClick={handleRightClick}
-          text="handleRightClick"
-        ></ButtonNew>
       </div>
     </div>
   );

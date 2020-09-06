@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Note from "./components/Note";
-import noteService from "./services/note";
-import Notification from "./components/Notification";
-import Footer from "./components/Footer";
+import Axios from "axios";
+
 const App = () => {
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState("input a new note");
   const [showAll, setShowAll] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("some error happened...");
-
   const hook = () => {
-    noteService.getAll().then((notes) => {
-      setNotes(notes);
+    Axios.get("http://localhost:3001/notes").then((res) => {
+      console.log(res, "fulfilled");
+      setNotes(res.data);
     });
   };
   useEffect(hook, []);
@@ -22,7 +20,7 @@ const App = () => {
       date: new Date().toISOString(),
       important: Math.random() < 0.5,
     };
-    noteService.create(newNoteObject).then((res) => {
+    Axios.post("http://localhost:3001/notes", newNoteObject).then((res) => {
       setNotes(notes.concat(res.data));
       setNewNote("");
     });
@@ -37,21 +35,12 @@ const App = () => {
   };
   const toggleImportanceOf = (id) => {
     console.log("importance of " + id + " needs to be toggled");
+    const url = `http://localhost:3001/notes/${id}`;
     const note = notes.find((item) => item.id === id);
     const changedNote = { ...note, important: !note.important };
-    noteService
-      .update(id, changedNote)
-      .then((res) => {
-        setNotes(notes.map((note) => (note.id !== id ? note : res.data)));
-      })
-      .catch((err) => {
-        setErrorMessage(
-          `Note '${note.content}' was already removed from server`
-        );
-        setTimeout(() => {
-          setErrorMessage(null);
-        }, 5000);
-      });
+    Axios.put(url, changedNote).then((res) => {
+      setNotes(notes.map((note) => (note.id !== id ? note : res.data)));
+    });
   };
   const notesToShow = showAll
     ? notes
@@ -60,7 +49,6 @@ const App = () => {
   return (
     <div>
       <h1>Notes</h1>
-      <Notification message={errorMessage} />
       <div>
         <button onClick={handleNoteShow}>
           show{showAll ? "showALL" : "important"}
@@ -79,7 +67,6 @@ const App = () => {
           ></Note>
         ))}
       </ul>
-      <Footer></Footer>
     </div>
   );
 };

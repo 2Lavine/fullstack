@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Note from "./components/Note";
 import noteService from "./services/note";
 import Notification from "./components/Notification";
-import Footer from "./components/Footer";
+
 const App = () => {
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState("input a new note");
@@ -44,14 +44,13 @@ const App = () => {
       .then((res) => {
         setNotes(notes.map((note) => (note.id !== id ? note : res.data)));
       })
-      .catch((err) => {
+      .catch(error => {
         setErrorMessage(
           `Note '${note.content}' was already removed from server`
-        );
+        )
         setTimeout(() => {
-          setErrorMessage(null);
-        }, 5000);
-      });
+          setErrorMessage(null)
+        }, 5000)
   };
   const notesToShow = showAll
     ? notes
@@ -79,7 +78,6 @@ const App = () => {
           ></Note>
         ))}
       </ul>
-      <Footer></Footer>
     </div>
   );
 };
