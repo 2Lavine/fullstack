@@ -1,7 +1,5 @@
 const express = require("express");
 const app = express();
-const cors = require("cors");
-app.use(cors());
 let notes = [
   {
     id: 1,
@@ -63,7 +61,7 @@ app.post("/api/notes", (req, res) => {
   console.log(note, "helloworld");
   res.json(note);
 });
-const PORT = process.env.PORT || 3001;
+const PORT = 3001;
 app.listen(PORT, () => {
   console.log("12321");
 });
